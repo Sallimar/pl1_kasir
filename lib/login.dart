@@ -1,16 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/beranda.dart';
-import 'package:pl1_kasir/signup.dart';
+import 'package:pl1_kasir/home_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Supabase.initialize(
-    url: 'https://zhmhmminjrbgsnvmkeae.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpobWhtbWluanJiZ3Nudm1rZWFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYzODMzNjgsImV4cCI6MjA1MTk1OTM2OH0.I0TpBzS7UyIcQIPkZ00D2YYHPJn21Aqe2oDxGCgqYOE',
-  );
-  runApp(const MyApp());
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -59,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
         );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Beranda()),
+          MaterialPageRoute(builder: (context) => MyHomePage()),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -80,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
         width: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/1.jpg'),
+            image: AssetImage('assets/background.jpeg'),
             fit: BoxFit.cover,
             alignment: Alignment.center,
           ),
@@ -215,19 +205,10 @@ class _LoginPageState extends State<LoginPage> {
                         GestureDetector(
                           onTap: () {
                             Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SignUpPage(),
-                              ),
-                            );
+                              context, 
+                              MaterialPageRoute(builder: (context)=> MyHomePage()));
                           },
-                          child: Text(
-                            "Don't have an account? Sign Up",
-                            style: TextStyle(
-                              color: Colors.orange.shade900,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          child: Text('Belum puya akun? Daftar di sini'),
                         ),
                       ],
                     ),
