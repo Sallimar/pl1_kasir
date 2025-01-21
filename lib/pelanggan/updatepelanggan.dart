@@ -4,9 +4,9 @@ import 'package:pl1_kasir/pelanggan/indexpelanggan.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EditPelanggan extends StatefulWidget {
-  final int Pelangganid;
+  final int PelangganID;
 
-  const EditPelanggan({Key? key, required this.Pelangganid}) : super(key: key);
+  const EditPelanggan({Key? key, required this.PelangganID}) : super(key: key);
 
   @override
   State<EditPelanggan> createState() => _EditPelangganState();
@@ -34,8 +34,12 @@ class _EditPelangganState extends State<EditPelanggan> {
       final data = await Supabase.instance.client
           .from('pelanggan')
           .select()
-          .eq('Pelangganid', widget.Pelangganid)
+          .eq('Pelangganid', widget.PelangganID)
           .single();
+
+      if (data == null) {
+        throw Exception('Data pelanggan tidak ditemukan');
+      }
 
       setState(() {
         _nmplg.text = data['NamaPelanggan'] ?? '';
@@ -63,16 +67,12 @@ class _EditPelangganState extends State<EditPelanggan> {
           'NamaPelanggan': _nmplg.text,
           'Alamat': _alamat.text,
           'NomorTelepon': _notlp.text,
-        }).eq('Pelangganid', widget.Pelangganid);
+        }).eq('Pelangganid', widget.PelangganID);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Data pelanggan berhasil diperbarui')),
         );
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => PelangganTab()),
-          (route) => false,
-        );
+        Navigator.pop(context, true);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Gagal memperbarui data pelanggan: $e')),
@@ -137,6 +137,9 @@ class _EditPelangganState extends State<EditPelanggan> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Nomor Telepon wajib diisi';
+                        }
+                        if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                          return 'Nomor Telepon hanya boleh berisi angka';
                         }
                         return null;
                       },

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/penjualan/indexpenjualan.dart';
+import 'package:pl1_kasir/home_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddProduk extends StatefulWidget {
@@ -10,45 +10,40 @@ class AddProduk extends StatefulWidget {
 }
 
 class _AddProdukState extends State<AddProduk> {
-  final _nmprd = TextEditingController();
+  final _nmprdk = TextEditingController();
   final _harga = TextEditingController();
   final _stok = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> produk() async {
+  Future<void> langgan() async {
     if (_formKey.currentState!.validate()) {
-      final NamaProduk = _nmprd.text;
-      final Harga = double.tryParse(_harga.text) ?? 0;
-      final Stok = int.tryParse(_stok.text) ?? 0;
+      final String NamaProduk = _nmprdk.text;
+      final String Harga = _harga.text;
+      final String Stok = _stok.text;
 
       try {
-        // Melakukan insert produk
         final response = await Supabase.instance.client.from('produk').insert([
           {
             'NamaProduk': NamaProduk,
             'Harga': Harga,
             'Stok': Stok,
           }
-        ]); // memastikan execute() digunakan di akhir
+        ]);
 
-        if (response.error == null) {
-          // Menampilkan pesan sukses
+        if (response.error != null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Produk berhasil disimpan')),
-          );
-          // Arahkan ke halaman PenjualanTab setelah data disimpan
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => PenjualanTab()),
+            SnackBar(content: Text('Gagal menambahkan produk: ${response.error!.message}')),
           );
         } else {
-          // Menampilkan pesan error jika response.error tidak null
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: ${response.error?.message}')),
+            const SnackBar(content: Text('Produk berhasil ditambahkan')),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => MyHomePage()),
           );
         }
       } catch (e) {
-        // Menangani error lain
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Terjadi kesalahan: $e')),
         );
@@ -60,62 +55,60 @@ class _AddProdukState extends State<AddProduk> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tambah Produk'),
+        title: const Text('Tambah Produk'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
-                controller: _nmprd,
-                decoration: InputDecoration(
+                controller: _nmprdk,
+                decoration: const InputDecoration(
                   labelText: 'Nama Produk',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Tidak boleh kosong';
+                    return 'Nama Barang wajib diisi';
                   }
                   return null;
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _harga,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Harga',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Tidak boleh kosong';
+                    return 'Harga wajib diisi';
                   }
                   return null;
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _stok,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Stok',
+                decoration: const InputDecoration(
+                  labelText: 'stok barang',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Tidak boleh kosong';
+                    return 'stok barang wajib diisi';
                   }
                   return null;
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: produk, 
-                child: Text('Tambah'),
+                onPressed: langgan,
+                child: const Text('Tambah'),
               ),
             ],
           ),

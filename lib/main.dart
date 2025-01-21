@@ -39,7 +39,7 @@ class MainPage extends StatelessWidget {
               ),
               SizedBox(height: 1),
               Text(
-                'Selamat Datang ditoko kami,\n semua kebutuhan anda ada disini',
+                'Selamat datang ditoko kami,\n semua kebutuhan anda ada disini',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                 textAlign: TextAlign.center,
               ),

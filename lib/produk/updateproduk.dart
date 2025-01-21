@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/penjualan/indexpenjualan.dart';
+import 'package:pl1_kasir/pelanggan/insertpelanggan.dart';
+import 'package:pl1_kasir/pelanggan/indexpelanggan.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EditProduk extends StatefulWidget {
-  final int produkId;
+  final int ProdukID;
 
-  const EditProduk({Key? key, required this.produkId}) : super(key: key);
+  const EditProduk({Key? key, required this.ProdukID}) : super(key: key);
 
   @override
-  State<EditProduk> createState() => _EditProdukState();
+  State<EditProduk> createState() => _EditPelangganState();
 }
 
-class _EditProdukState extends State<EditProduk> {
-  final _nmprd = TextEditingController();
+class _EditPelangganState extends State<EditProduk> {
+  final _nmprdk = TextEditingController();
   final _harga = TextEditingController();
   final _stok = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -25,28 +26,27 @@ class _EditProdukState extends State<EditProduk> {
     _loadProdukData();
   }
 
-  // Fungsi untuk memuat data produk
   Future<void> _loadProdukData() async {
     setState(() {
       isLoading = true;
     });
     try {
-      final response = await Supabase.instance.client
+      final data = await Supabase.instance.client
           .from('produk')
           .select()
-          .eq('id', widget.produkId)
+          .eq('Produkid', widget.ProdukID)
           .single();
 
-      if (response != null) {
-        setState(() {
-          _nmprd.text = response['NamaProduk'] ?? '';
-          _harga.text = response['Harga'].toString() ?? '';
-          _stok.text = response['Stok'].toString() ?? '';
-          isLoading = false;
-        });
-      } else {
-        throw Exception('Produk tidak ditemukan');
+      if (data == null) {
+        throw Exception('Data produk tidak ditemukan');
       }
+
+      setState(() {
+        _nmprdk.text = data['NamaProduk'] ?? '';
+        _harga.text = data['Harga'] ?? '';
+        _stok.text = data['Stok'] ?? '';
+        isLoading = false;
+      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Gagal memuat data produk: $e')),
@@ -57,38 +57,25 @@ class _EditProdukState extends State<EditProduk> {
     }
   }
 
-  // Fungsi untuk mengupdate produk
-  Future<void> _updateProduk() async {
+  Future<void> updateProduk() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         isLoading = true;
       });
       try {
-        final response = await Supabase.instance.client
-            .from('produk')
-            .update({
-              'NamaProduk': _nmprd.text,
-              'Harga': double.tryParse(_harga.text) ?? 0,
-              'Stok': int.tryParse(_stok.text) ?? 0,
-            })
-            .eq('id', widget.produkId);
+        await Supabase.instance.client.from('produk').update({
+          'NamaProduk': _nmprdk.text,
+          'Harga': _harga.text,
+          'Stok': _stok.text,
+        }).eq('Pelangganid', widget.ProdukID);
 
-        if (response != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Data produk berhasil diperbarui')),
-          );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => PenjualanTab()),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Gagal memperbarui produk')),
-          );
-        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Data produk berhasil diperbarui')),
+        );
+        Navigator.pop(context, true);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Terjadi kesalahan: $e')),
+          SnackBar(content: Text('Gagal memperbarui data produk: $e')),
         );
       } finally {
         setState(() {
@@ -102,7 +89,7 @@ class _EditProdukState extends State<EditProduk> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Produk'),
+        title: const Text('Edit Pelanggan'),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -114,14 +101,14 @@ class _EditProdukState extends State<EditProduk> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TextFormField(
-                      controller: _nmprd,
+                      controller: _nmprdk,
                       decoration: const InputDecoration(
-                        labelText: 'Nama Produk',
+                        labelText: 'Nama Pelanggan',
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Nama produk wajib diisi';
+                          return 'Nama wajib diisi';
                         }
                         return null;
                       },
@@ -129,14 +116,13 @@ class _EditProdukState extends State<EditProduk> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _harga,
-                      keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
-                        labelText: 'Harga',
+                        labelText: 'Alamat',
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Harga wajib diisi';
+                          return 'Alamat wajib diisi';
                         }
                         return null;
                       },
@@ -144,21 +130,23 @@ class _EditProdukState extends State<EditProduk> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _stok,
-                      keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
-                        labelText: 'Stok',
+                        labelText: 'Nomor Telepon',
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Stok wajib diisi';
+                          return 'Nomor Telepon wajib diisi';
+                        }
+                        if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                          return 'Nomor Telepon hanya boleh berisi angka';
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: _updateProduk,
+                      onPressed: updateProduk,
                       child: const Text('Update'),
                     ),
                   ],
