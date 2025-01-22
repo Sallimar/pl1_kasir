@@ -23,7 +23,8 @@ class _PelangganTabState extends State<PelangganTab> {
       isLoading = true;
     });
     try {
-      final response = await Supabase.instance.client.from('pelanggan').select();
+      final response =
+          await Supabase.instance.client.from('pelanggan').select();
       setState(() {
         pelanggan = List<Map<String, dynamic>>.from(response);
         isLoading = false;
@@ -40,10 +41,13 @@ class _PelangganTabState extends State<PelangganTab> {
 
   Future<void> deletePelanggan(int id) async {
     try {
-      await Supabase.instance.client.from('pelanggan').delete().eq('PelangganID', id);
+      await Supabase.instance.client
+          .from('pelanggan')
+          .delete()
+          .eq('PelangganID', id);
       fetchPelanggan();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pelanggan berhasil dihapus')),
+        SnackBar(content: Text('Pelanggan berhasil dihapus')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -56,104 +60,114 @@ class _PelangganTabState extends State<PelangganTab> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: isLoading
-          ? const Center(
+          ? Center(
               child: CircularProgressIndicator(),
             )
           : pelanggan.isEmpty
-              ? const Center(
+              ? Center(
                   child: Text(
                     'Tidak ada pelanggan',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 )
               : GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
                   ),
-                  padding: const EdgeInsets.all(6),
+                  padding: EdgeInsets.all(10),
                   itemCount: pelanggan.length,
                   itemBuilder: (context, index) {
                     final langgan = pelanggan[index];
                     return Card(
                       elevation: 4,
-                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      margin: EdgeInsets.symmetric(vertical: 8),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)),
                       child: Padding(
-                        padding: const EdgeInsets.all(10),
+                        padding: EdgeInsets.all(12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              langgan['NamaPelanggan'] ?? 'Pelanggan tidak tersedia',
-                              style: const TextStyle(
+                              langgan['NamaPelanggan'] ??
+                                  'Pelanggan tidak tersedia',
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                                fontSize: 14,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            SizedBox(height: 4),
                             Text(
                               langgan['Alamat'] ?? 'Alamat tidak tersedia',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontStyle: FontStyle.italic,
                                 fontSize: 13,
                                 color: Colors.grey,
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: 8),
                             Text(
                               langgan['NomorTelepon'] ?? 'Tidak tersedia',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                                fontSize: 13,
                               ),
                               textAlign: TextAlign.justify,
                             ),
-                            const Divider(),
+                            Divider(),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 IconButton(
-                                  icon: const Icon(Icons.edit, color: Colors.blueAccent),
+                                  icon: Icon(Icons.edit,
+                                      color: Colors.blueAccent),
                                   onPressed: () {
-                                    final pelangganID = langgan['PelangganID'] ?? 0;
+                                    final pelangganID =
+                                        langgan['PelangganID'] ?? 0;
                                     if (pelangganID != 0) {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => EditPelanggan(PelangganID: pelangganID),
+                                          builder: (context) => EditPelanggan(
+                                              PelangganID: pelangganID),
                                         ),
                                       );
                                     } else {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('ID pelanggan tidak valid')),
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'ID pelanggan tidak valid')),
                                       );
                                     }
                                   },
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.delete, color: Colors.redAccent),
+                                  icon: Icon(Icons.delete,
+                                      color: Colors.redAccent),
                                   onPressed: () {
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          title: const Text('Hapus Pelanggan'),
-                                          content: const Text(
+                                          title: Text('Hapus Pelanggan'),
+                                          content: Text(
                                               'Apakah Anda yakin ingin menghapus pelanggan ini?'),
                                           actions: [
                                             TextButton(
-                                              onPressed: () => Navigator.pop(context),
-                                              child: const Text('Batal'),
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                              child: Text('Batal'),
                                             ),
                                             TextButton(
                                               onPressed: () {
-                                                deletePelanggan(langgan['PelangganID']);
+                                                deletePelanggan(
+                                                    langgan['PelangganID']);
                                                 Navigator.pop(context);
                                               },
-                                              child: const Text('Hapus'),
+                                              child: Text('Hapus'),
                                             ),
                                           ],
                                         );
@@ -176,7 +190,7 @@ class _PelangganTabState extends State<PelangganTab> {
             MaterialPageRoute(builder: (context) => AddPelanggan()),
           );
         },
-        child: const Icon(Icons.add),
+        child: Icon(Icons.add),
       ),
     );
   }

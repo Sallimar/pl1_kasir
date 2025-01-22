@@ -15,7 +15,7 @@ class _AddProdukState extends State<AddProduk> {
   final _stok = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> langgan() async {
+  Future<void> prdk() async {
     if (_formKey.currentState!.validate()) {
       final String NamaProduk = _nmprdk.text;
       final String Harga = _harga.text;
@@ -67,7 +67,7 @@ class _AddProdukState extends State<AddProduk> {
               TextFormField(
                 controller: _nmprdk,
                 decoration: const InputDecoration(
-                  labelText: 'Nama Produk',
+                  labelText: 'NamaProduk',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
@@ -95,7 +95,7 @@ class _AddProdukState extends State<AddProduk> {
               TextFormField(
                 controller: _stok,
                 decoration: const InputDecoration(
-                  labelText: 'stok barang',
+                  labelText: 'Stok',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
@@ -107,7 +107,7 @@ class _AddProdukState extends State<AddProduk> {
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: langgan,
+                onPressed: prdk,
                 child: const Text('Tambah'),
               ),
             ],

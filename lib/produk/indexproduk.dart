@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/pelanggan/insertpelanggan.dart';
-import 'package:pl1_kasir/pelanggan/updatepelanggan.dart';
 import 'package:pl1_kasir/produk/insertproduk.dart';
 import 'package:pl1_kasir/produk/updateproduk.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:async';
 
 class ProdukTab extends StatefulWidget {
   @override
@@ -32,7 +31,7 @@ class _ProdukTabState extends State<ProdukTab> {
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching pelanggan: $e')),
+        SnackBar(content: Text('Error fetching produk: $e')),
       );
       setState(() {
         isLoading = false;
@@ -45,7 +44,7 @@ class _ProdukTabState extends State<ProdukTab> {
       await Supabase.instance.client.from('produk').delete().eq('ProdukID', id);
       fetchProduk();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Produk berhasil dihapus')),
+       SnackBar(content: Text('Produk berhasil dihapus')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -58,108 +57,106 @@ class _ProdukTabState extends State<ProdukTab> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: isLoading
-          ? const Center(
+          ? Center(
               child: CircularProgressIndicator(),
             )
           : produk.isEmpty
-              ? const Center(
+              ?  Center(
                   child: Text(
                     'Tidak ada produk',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 )
               : GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, crossAxisSpacing: 10,
                   ),
-                  padding: const EdgeInsets.all(8),
+                  padding: EdgeInsets.all(8),
                   itemCount: produk.length,
                   itemBuilder: (context, index) {
                     final prdk = produk[index];
                     return Card(
                       elevation: 4,
-                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      margin: EdgeInsets.symmetric(vertical: 8),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)),
                       child: Padding(
-                        padding: const EdgeInsets.all(12),
+                        padding: EdgeInsets.all(12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               prdk['NamaProduk'] ?? 'Produk tidak tersedia',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 17,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                           SizedBox(height: 4),
                             Text(
                               prdk['Harga'] != null
                               ? 'Harga: ${prdk['Harga']}'
                               : 'Harga Tidak Tersedia',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontStyle: FontStyle.italic,
                                 fontSize: 13,
                                 color: Colors.grey,
                               ),
                             ),
-                            const SizedBox(height: 8),
+                           SizedBox(height: 8),
                             Text(
                               prdk['Stok'] != null
                               ? 'Stok: ${prdk['Stok']}'
                               : 'Stok Tidak Tersedia',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
                               ),
                               textAlign: TextAlign.justify,
                             ),
-                            const Divider(),
+                           Divider(),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 IconButton(
-                                  icon: const Icon(Icons.edit, color: Colors.blueAccent,),
+                                  icon: Icon(Icons.edit, color: Colors.blueAccent,),
                                   onPressed: () {
-                                    final produkID = prdk['ProdukID'] ?? 0;
-                                    if (produkID != 0) {
+                                    final ProdukID = prdk['ProdukID'] ?? 0;
+                                    if (ProdukID != 0) {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => EditProduk(ProdukID: produkID),
+                                          builder: (context) => EditProduk(ProdukID: ProdukID,),
                                         ),
                                       );
                                     } else {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('ID produk tidak valid')),
+                                       SnackBar(content: Text('ID produk tidak valid')),
                                       );
                                     }
                                   },
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.delete, color: Colors.redAccent,),
+                                  icon: Icon(Icons.delete, color: Colors.redAccent,),
                                   onPressed: () {
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          title: const Text('Hapus Produk'),
-                                          content: const Text(
+                                          title: Text('Hapus Produk'),
+                                          content: Text(
                                               'Apakah Anda yakin ingin menghapus produk ini?'),
                                           actions: [
                                             TextButton(
                                               onPressed: () => Navigator.pop(context),
-                                              child: const Text('Batal'),
+                                              child: Text('Batal'),
                                             ),
                                             TextButton(
                                               onPressed: () {
                                                 deleteProduk(prdk['ProdukID']);
                                                 Navigator.pop(context);
                                               },
-                                              child: const Text('Hapus'),
+                                              child: Text('Hapus'),
                                             ),
                                           ],
                                         );
@@ -182,7 +179,7 @@ class _ProdukTabState extends State<ProdukTab> {
             MaterialPageRoute(builder: (context) => AddProduk()),
           );
         },
-        child: const Icon(Icons.add),
+        child: Icon(Icons.add),
       ),
     );
   }

@@ -3,7 +3,7 @@ import 'package:pl1_kasir/home_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddPelanggan extends StatefulWidget {
-  const AddPelanggan({super.key});
+  AddPelanggan({super.key});
 
   @override
   State<AddPelanggan> createState() => _AddPelangganState();
@@ -22,21 +22,24 @@ class _AddPelangganState extends State<AddPelanggan> {
       final String NomorTelepon = _notlp.text;
 
       try {
-        final response = await Supabase.instance.client.from('pelanggan').insert([
+        final response =
+            await Supabase.instance.client.from('pelanggan').insert(
           {
             'NamaPelanggan': NamaPelanggan,
             'Alamat': Alamat,
             'NomorTelepon': NomorTelepon,
           }
-        ]);
+        );
 
-        if (response.error != null) {
+        if (response != null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Gagal menambahkan pelanggan: ${response.error!.message}')),
+            SnackBar(
+                content: Text(
+                    'Gagal menambahkan pelanggan: ${response.error!.message}')),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Pelanggan berhasil ditambahkan')),
+            SnackBar(content: Text('Pelanggan berhasil ditambahkan')),
           );
           Navigator.pushReplacement(
             context,
@@ -55,10 +58,10 @@ class _AddPelangganState extends State<AddPelanggan> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tambah Pelanggan'),
+        title: Text('Tambah Pelanggan'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -66,7 +69,7 @@ class _AddPelangganState extends State<AddPelanggan> {
             children: [
               TextFormField(
                 controller: _nmplg,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Nama Pelanggan',
                   border: OutlineInputBorder(),
                 ),
@@ -77,10 +80,10 @@ class _AddPelangganState extends State<AddPelanggan> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               TextFormField(
                 controller: _alamat,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Alamat',
                   border: OutlineInputBorder(),
                 ),
@@ -91,10 +94,10 @@ class _AddPelangganState extends State<AddPelanggan> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               TextFormField(
                 controller: _notlp,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Nomor Telepon',
                   border: OutlineInputBorder(),
                 ),
@@ -105,10 +108,10 @@ class _AddPelangganState extends State<AddPelanggan> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               ElevatedButton(
                 onPressed: langgan,
-                child: const Text('Tambah'),
+                child: Text('Tambah'),
               ),
             ],
           ),

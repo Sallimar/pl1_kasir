@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/pelanggan/insertpelanggan.dart';
-import 'package:pl1_kasir/pelanggan/indexpelanggan.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EditProduk extends StatefulWidget {
@@ -9,10 +7,10 @@ class EditProduk extends StatefulWidget {
   const EditProduk({Key? key, required this.ProdukID}) : super(key: key);
 
   @override
-  State<EditProduk> createState() => _EditPelangganState();
+  State<EditProduk> createState() => _EditProdukState();
 }
 
-class _EditPelangganState extends State<EditProduk> {
+class _EditProdukState extends State<EditProduk> {
   final _nmprdk = TextEditingController();
   final _harga = TextEditingController();
   final _stok = TextEditingController();
@@ -34,7 +32,7 @@ class _EditPelangganState extends State<EditProduk> {
       final data = await Supabase.instance.client
           .from('produk')
           .select()
-          .eq('Produkid', widget.ProdukID)
+          .eq('ProdukID', widget.ProdukID)
           .single();
 
       if (data == null) {
@@ -43,8 +41,8 @@ class _EditPelangganState extends State<EditProduk> {
 
       setState(() {
         _nmprdk.text = data['NamaProduk'] ?? '';
-        _harga.text = data['Harga'] ?? '';
-        _stok.text = data['Stok'] ?? '';
+        _harga.text = data['Harga']?.toString() ?? '';
+        _stok.text = data['Stok']?.toString() ?? '';
         isLoading = false;
       });
     } catch (e) {
@@ -65,9 +63,9 @@ class _EditPelangganState extends State<EditProduk> {
       try {
         await Supabase.instance.client.from('produk').update({
           'NamaProduk': _nmprdk.text,
-          'Harga': _harga.text,
-          'Stok': _stok.text,
-        }).eq('Pelangganid', widget.ProdukID);
+          'Harga': double.tryParse(_harga.text) ?? 0,
+          'Stok': int.tryParse(_stok.text) ?? 0,
+        }).eq('ProdukID', widget.ProdukID);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Data produk berhasil diperbarui')),
@@ -89,7 +87,7 @@ class _EditPelangganState extends State<EditProduk> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Pelanggan'),
+        title: const Text('Edit Produk'),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -103,12 +101,12 @@ class _EditPelangganState extends State<EditProduk> {
                     TextFormField(
                       controller: _nmprdk,
                       decoration: const InputDecoration(
-                        labelText: 'Nama Pelanggan',
+                        labelText: 'Nama Produk',
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Nama wajib diisi';
+                          return 'Nama produk wajib diisi';
                         }
                         return null;
                       },
@@ -117,12 +115,16 @@ class _EditPelangganState extends State<EditProduk> {
                     TextFormField(
                       controller: _harga,
                       decoration: const InputDecoration(
-                        labelText: 'Alamat',
+                        labelText: 'Harga',
                         border: OutlineInputBorder(),
                       ),
+                      keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Alamat wajib diisi';
+                          return 'Harga wajib diisi';
+                        }
+                        if (double.tryParse(value) == null) {
+                          return 'Harga harus berupa angka';
                         }
                         return null;
                       },
@@ -131,15 +133,16 @@ class _EditPelangganState extends State<EditProduk> {
                     TextFormField(
                       controller: _stok,
                       decoration: const InputDecoration(
-                        labelText: 'Nomor Telepon',
+                        labelText: 'Stok',
                         border: OutlineInputBorder(),
                       ),
+                      keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Nomor Telepon wajib diisi';
+                          return 'Stok wajib diisi';
                         }
-                        if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                          return 'Nomor Telepon hanya boleh berisi angka';
+                        if (int.tryParse(value) == null) {
+                          return 'Stok harus berupa angka';
                         }
                         return null;
                       },

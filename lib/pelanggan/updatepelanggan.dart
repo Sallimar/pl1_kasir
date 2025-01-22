@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/pelanggan/insertpelanggan.dart';
 import 'package:pl1_kasir/pelanggan/indexpelanggan.dart';
+import 'package:pl1_kasir/pelanggan/insertpelanggan.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EditPelanggan extends StatefulWidget {
   final int PelangganID;
 
-  const EditPelanggan({Key? key, required this.PelangganID}) : super(key: key);
+  EditPelanggan({Key? key, required this.PelangganID}) : super(key: key);
 
   @override
   State<EditPelanggan> createState() => _EditPelangganState();
@@ -34,7 +34,7 @@ class _EditPelangganState extends State<EditPelanggan> {
       final data = await Supabase.instance.client
           .from('pelanggan')
           .select()
-          .eq('Pelangganid', widget.PelangganID)
+          .eq('PelangganID', widget.PelangganID)
           .single();
 
       if (data == null) {
@@ -67,10 +67,10 @@ class _EditPelangganState extends State<EditPelanggan> {
           'NamaPelanggan': _nmplg.text,
           'Alamat': _alamat.text,
           'NomorTelepon': _notlp.text,
-        }).eq('Pelangganid', widget.PelangganID);
+        }).eq('PelangganID', widget.PelangganID);
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Data pelanggan berhasil diperbarui')),
+          SnackBar(content: Text('Data pelanggan berhasil diperbarui')),
         );
         Navigator.pop(context, true);
       } catch (e) {
@@ -89,12 +89,12 @@ class _EditPelangganState extends State<EditPelanggan> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Pelanggan'),
+        title: Text('Edit Pelanggan'),
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator())
           : Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -102,7 +102,7 @@ class _EditPelangganState extends State<EditPelanggan> {
                   children: [
                     TextFormField(
                       controller: _nmplg,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Nama Pelanggan',
                         border: OutlineInputBorder(),
                       ),
@@ -113,10 +113,10 @@ class _EditPelangganState extends State<EditPelanggan> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
                     TextFormField(
                       controller: _alamat,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Alamat',
                         border: OutlineInputBorder(),
                       ),
@@ -127,27 +127,27 @@ class _EditPelangganState extends State<EditPelanggan> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
                     TextFormField(
                       controller: _notlp,
-                      decoration: const InputDecoration(
-                        labelText: 'Nomor Telepon',
+                      decoration: InputDecoration(
+                        labelText: 'NomorTelepon',
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Nomor Telepon wajib diisi';
+                          return 'NomorTelepon wajib diisi';
                         }
                         if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                          return 'Nomor Telepon hanya boleh berisi angka';
+                          return 'NomorTelepon hanya boleh berisi angka';
                         }
                         return null;
                       },
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: updatePelanggan,
-                      child: const Text('Update'),
+                      child: Text('Update'),
                     ),
                   ],
                 ),
