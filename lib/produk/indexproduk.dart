@@ -114,7 +114,7 @@ class _ProdukTabState extends State<ProdukTab> {
                               ),
                               textAlign: TextAlign.justify,
                             ),
-                           Divider(),
+                           Divider(), //garis pemisah
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [

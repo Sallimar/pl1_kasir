@@ -11,9 +11,9 @@ class EditProduk extends StatefulWidget {
 }
 
 class _EditProdukState extends State<EditProduk> {
-  final _nmprdk = TextEditingController();
-  final _harga = TextEditingController();
-  final _stok = TextEditingController();
+  final TextEditingController namaprodukController = TextEditingController();
+  final TextEditingController hargaController = TextEditingController();
+  final TextEditingController stokController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   bool isLoading = false;
@@ -40,9 +40,9 @@ class _EditProdukState extends State<EditProduk> {
       }
 
       setState(() {
-        _nmprdk.text = data['NamaProduk'] ?? '';
-        _harga.text = data['Harga']?.toString() ?? '';
-        _stok.text = data['Stok']?.toString() ?? '';
+        namaprodukController.text = data['NamaProduk'] ?? '';
+        hargaController.text = data['Harga']?.toString() ?? '';
+        stokController.text = data['Stok']?.toString() ?? '';
         isLoading = false;
       });
     } catch (e) {
@@ -62,9 +62,9 @@ class _EditProdukState extends State<EditProduk> {
       });
       try {
         await Supabase.instance.client.from('produk').update({
-          'NamaProduk': _nmprdk.text,
-          'Harga': double.tryParse(_harga.text) ?? 0,
-          'Stok': int.tryParse(_stok.text) ?? 0,
+          'NamaProduk': namaprodukController.text,
+          'Harga': double.tryParse(hargaController.text) ?? 0,
+          'Stok': int.tryParse(stokController.text) ?? 0,
         }).eq('ProdukID', widget.ProdukID);
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -99,7 +99,7 @@ class _EditProdukState extends State<EditProduk> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TextFormField(
-                      controller: _nmprdk,
+                      controller: namaprodukController,
                       decoration: const InputDecoration(
                         labelText: 'Nama Produk',
                         border: OutlineInputBorder(),
@@ -113,7 +113,7 @@ class _EditProdukState extends State<EditProduk> {
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
-                      controller: _harga,
+                      controller: hargaController,
                       decoration: const InputDecoration(
                         labelText: 'Harga',
                         border: OutlineInputBorder(),
@@ -131,7 +131,7 @@ class _EditProdukState extends State<EditProduk> {
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
-                      controller: _stok,
+                      controller: stokController,
                       decoration: const InputDecoration(
                         labelText: 'Stok',
                         border: OutlineInputBorder(),

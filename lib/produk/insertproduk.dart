@@ -10,37 +10,47 @@ class AddProduk extends StatefulWidget {
 }
 
 class _AddProdukState extends State<AddProduk> {
-  final _nmprdk = TextEditingController();
-  final _harga = TextEditingController();
-  final _stok = TextEditingController();
+  final TextEditingController namaprodukController = TextEditingController();
+  final TextEditingController hargaController = TextEditingController();
+  final TextEditingController stokController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   Future<void> prdk() async {
     if (_formKey.currentState!.validate()) {
-      final String NamaProduk = _nmprdk.text;
-      final String Harga = _harga.text;
-      final String Stok = _stok.text;
+      final String namaProduk = namaprodukController.text.trim();
+      final int? harga = int.tryParse(hargaController.text.trim());
+      final int? stok = int.tryParse(stokController.text.trim());
+
+      // Validasi input angka
+      if (harga == null || stok == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Harga dan Stok harus berupa angka')),
+        );
+        return;
+      }
 
       try {
-        final response = await Supabase.instance.client.from('produk').insert([
-          {
-            'NamaProduk': NamaProduk,
-            'Harga': Harga,
-            'Stok': Stok,
-          }
-        ]);
+        // Insert data ke tabel "produk"
+        final response = await Supabase.instance.client
+            .from('produk')
+            .insert({
+              'NamaProduk': namaProduk,
+              'Harga': harga,
+              'Stok': stok,
+            })
+            .select();
 
-        if (response.error != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Gagal menambahkan produk: ${response.error!.message}')),
-          );
-        } else {
+        if (response.isNotEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Produk berhasil ditambahkan')),
           );
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => MyHomePage()),
+            MaterialPageRoute(builder: (context) => const MyHomePage()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Gagal menambahkan produk.')),
           );
         }
       } catch (e) {
@@ -65,25 +75,26 @@ class _AddProdukState extends State<AddProduk> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
-                controller: _nmprdk,
+                controller: namaprodukController,
                 decoration: const InputDecoration(
-                  labelText: 'NamaProduk',
+                  labelText: 'Nama Produk',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Nama Barang wajib diisi';
+                    return 'Nama Produk wajib diisi';
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: _harga,
+                controller: hargaController,
                 decoration: const InputDecoration(
                   labelText: 'Harga',
                   border: OutlineInputBorder(),
                 ),
+                keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Harga wajib diisi';
@@ -93,14 +104,15 @@ class _AddProdukState extends State<AddProduk> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: _stok,
+                controller: stokController,
                 decoration: const InputDecoration(
                   labelText: 'Stok',
                   border: OutlineInputBorder(),
                 ),
+                keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'stok barang wajib diisi';
+                    return 'Stok wajib diisi';
                   }
                   return null;
                 },

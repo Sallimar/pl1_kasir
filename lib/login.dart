@@ -68,13 +68,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/background.jpeg'),
-            fit: BoxFit.cover,
-            alignment: Alignment.center,
-          ),
-        ),
+        color: Colors.pink[100],
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -86,16 +80,17 @@ class _LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   Text(
                     "Login",
-                    style: TextStyle(color: Colors.white, fontSize: 40),
+                    style: TextStyle(color: Colors.black, fontSize: 40),
                   ),
                   SizedBox(height: 10),
                   Text(
                     "Welcome Back",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    style: TextStyle(color: Colors.black, fontSize: 18),
                   ),
                 ],
               ),
             ),
+            //Box Besar
             SizedBox(height: 70),
             Expanded(
               child: Container(
@@ -113,6 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: <Widget>[
                         SizedBox(height: 50),
                         Container(
+                          //Box kecil
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.4),
                             borderRadius: BorderRadius.circular(10),
@@ -200,15 +196,6 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 20),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context, 
-                              MaterialPageRoute(builder: (context)=> MyHomePage()));
-                          },
-                          child: Text('Belum puya akun? Daftar di sini'),
                         ),
                       ],
                     ),
