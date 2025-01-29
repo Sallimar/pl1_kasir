@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/Register.dart';
+import 'package:pl1_kasir/screens/Register.dart';
 import 'package:pl1_kasir/main.dart';
 import 'package:pl1_kasir/pelanggan/indexpelanggan.dart';
 import 'package:pl1_kasir/penjualan/indexpenjualan.dart';
@@ -14,18 +14,25 @@ class MyHomePage extends StatelessWidget {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
-        appBar: AppBar(
+        appBar: AppBar( 
+          title: Text('Dashboard', style: TextStyle(color: Colors.white),),
+          backgroundColor: Colors. green[300],
           bottom: TabBar(
+            indicatorColor: Colors.white,
+            indicatorWeight: 4.0,
+            labelStyle: TextStyle(fontWeight: FontWeight.bold),
+            unselectedLabelColor: Colors.white70,
             tabs: [
-              Tab(icon: Icon(Icons.drafts, color: Colors.black), text: 'Detail Penjualan'),
-              Tab(icon: Icon(Icons.inventory_2, color: Colors.black), text: 'Produk'),
-              Tab(icon: Icon(Icons.people, color: Colors.black), text: 'Customer'),
-              Tab(icon: Icon(Icons.shopping_cart, color: Colors.black), text: 'Penjualan'),
+              Tab(icon: Icon(Icons.analytics_outlined, color: Colors.white70,), text: 'Detail Penjualan'),
+              Tab(icon: Icon(Icons.inventory, color: Colors.white70,), text: 'Produk'),
+              Tab(icon: Icon(Icons.groups, color: Colors.white70,), text: 'Customer'),
+              Tab(icon: Icon(Icons.sell, color: Colors.white70,), text: 'Penjualan'),
             ],
           ),
         ),
         drawer: Drawer(
           child: ListView(
+             padding: EdgeInsets.zero,
             children: [
               SizedBox(
                 height: 100,

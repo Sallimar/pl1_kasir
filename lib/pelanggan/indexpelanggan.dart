@@ -70,19 +70,14 @@ class _PelangganTabState extends State<PelangganTab> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 )
-              : GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                  ),
+              : ListView.builder(
                   padding: EdgeInsets.all(10),
                   itemCount: pelanggan.length,
                   itemBuilder: (context, index) {
                     final langgan = pelanggan[index];
                     return Card(
                       elevation: 4,
-                      margin: EdgeInsets.symmetric(vertical: 8),
+                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)),
                       child: Padding(
@@ -95,7 +90,7 @@ class _PelangganTabState extends State<PelangganTab> {
                                   'Pelanggan tidak tersedia',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                                fontSize: 16,
                               ),
                             ),
                             SizedBox(height: 4),
@@ -103,7 +98,7 @@ class _PelangganTabState extends State<PelangganTab> {
                               langgan['Alamat'] ?? 'Alamat tidak tersedia',
                               style: TextStyle(
                                 fontStyle: FontStyle.italic,
-                                fontSize: 13,
+                                fontSize: 14,
                                 color: Colors.grey,
                               ),
                             ),
@@ -112,7 +107,7 @@ class _PelangganTabState extends State<PelangganTab> {
                               langgan['NomorTelepon'] ?? 'Tidak tersedia',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 13,
+                                fontSize: 14,
                               ),
                               textAlign: TextAlign.justify,
                             ),
@@ -191,6 +186,7 @@ class _PelangganTabState extends State<PelangganTab> {
           );
         },
         child: Icon(Icons.add),
+        backgroundColor: Colors.white,
       ),
     );
   }
