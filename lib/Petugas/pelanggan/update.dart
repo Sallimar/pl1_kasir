@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/pelanggan/indexpelanggan.dart';
-import 'package:pl1_kasir/pelanggan/insertpelanggan.dart';
+import 'package:pl1_kasir/petugas/pelanggan/index.dart';
+import 'package:pl1_kasir/petugas/pelanggan/insert.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EditPelanggan extends StatefulWidget {

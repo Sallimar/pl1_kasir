@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/penjualan/insertpenjualan.dart';
-import 'package:pl1_kasir/penjualan/updatepenjualan.dart';
+import 'package:pl1_kasir/petugas/penjualan/update.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PenjualanTab extends StatefulWidget {
@@ -15,10 +15,10 @@ class _PenjualanTabState extends State<PenjualanTab> {
   @override
   void initState() {
     super.initState();
-    fetchpenjualan();
+    fetchPenjualan();
   }
 
-  Future<void> fetchpenjualan() async {
+  Future<void> fetchPenjualan() async {
     setState(() {
       isLoading = true;
     });
@@ -26,22 +26,22 @@ class _PenjualanTabState extends State<PenjualanTab> {
       final response = await Supabase.instance.client.from('penjualan').select();
       setState(() {
         penjualan = List<Map<String, dynamic>>.from(response);
+        isLoading = false;
       });
     } catch (e) {
       print('Error fetching penjualan: $e');
-    } finally {
       setState(() {
         isLoading = false;
       });
     }
   }
 
-  Future<void> deletePenjualan(int id) async {
+  Future<void> deleteBarang(int id) async {
     try {
-      await Supabase.instance.client.from('penjualan').delete().eq('ID', id);
-      fetchpenjualan();
+      await Supabase.instance.client.from('penjualan').delete().eq('Penjualanid', id);
+      fetchPenjualan();
     } catch (e) {
-      print('Error deleting penjualan: $e');
+      print('Error deleting barang: $e');
     }
   }
 
@@ -49,7 +49,9 @@ class _PenjualanTabState extends State<PenjualanTab> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: isLoading
-          ? SizedBox.shrink() // Tidak menampilkan apa-apa saat loading
+          ? Center(
+              child: LoadingAnimationWidget.twoRotatingArc(color: Colors.grey, size: 30),
+            )
           : penjualan.isEmpty
               ? Center(
                   child: Text(
@@ -58,9 +60,9 @@ class _PenjualanTabState extends State<PenjualanTab> {
                   ),
                 )
               : GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
                   ),
                   padding: EdgeInsets.all(8),
                   itemCount: penjualan.length,
@@ -82,71 +84,64 @@ class _PenjualanTabState extends State<PenjualanTab> {
                               Text(
                                 jual['TanggalPenjualan'] ?? 'Tanggal tidak tersedia',
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold, fontSize: 20,
                                 ),
                               ),
                               SizedBox(height: 4),
                               Text(
-                                'TotalHarga: ${jual['TotalHarga'] ?? 'Tidak tersedia'}',
+                                'Total Harga: ${jual['TotalHarga']?.toString() ?? 'Tidak tersedia'}',
                                 style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  fontSize: 16,
-                                  color: Colors.grey,
+                                  fontStyle: FontStyle.italic, fontSize: 16, color: Colors.grey,
                                 ),
                               ),
                               SizedBox(height: 8),
                               Text(
-                                'PelangganID: ${jual['PelangganID'] ?? 'Tidak tersedia'}',
+                                'Pelanggan ID: ${jual['Pelangganid']?.toString() ?? 'Tidak tersedia'}',
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold, fontSize: 14,
                                 ),
                                 textAlign: TextAlign.justify,
                               ),
-                              Divider(),
+                              const Divider(),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   IconButton(
-                                    icon: Icon(Icons.edit, color: Colors.blueAccent),
+                                    icon: const Icon(Icons.edit, color: Colors.blueAccent),
                                     onPressed: () {
-                                      final penjualanID = jual['ID'] ?? 0; // Ganti dengan 'ID' yang benar
-                                      if (penjualanID != 0) {
+                                      final Penjualanid = jual['Penjualanid'] ?? 0; // Pastikan ini sesuai dengan kolom di database
+                                      if (Penjualanid != 0) {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => EditPenjualan(
-                                              PenjualanID: penjualanID,
-                                            ),
+                                            builder: (context) => PenjualanTab()
                                           ),
                                         );
                                       } else {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(content: Text('ID penjualan tidak valid')));
+                                        print('ID pelanggan tidak valid');
                                       }
                                     },
                                   ),
                                   IconButton(
-                                    icon: Icon(Icons.delete, color: Colors.redAccent),
+                                    icon: const Icon(Icons.delete, color: Colors.redAccent),
                                     onPressed: () {
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text('Hapus Penjualan'),
-                                            content: Text('Apakah Anda yakin ingin menghapus penjualan ini?'),
+                                            title: const Text('Hapus Pelanggan'),
+                                            content: const Text('Apakah Anda yakin ingin menghapus pelanggan ini?'),
                                             actions: [
                                               TextButton(
                                                 onPressed: () => Navigator.pop(context),
-                                                child: Text('Batal'),
+                                                child: const Text('Batal'),
                                               ),
                                               TextButton(
                                                 onPressed: () {
-                                                  deletePenjualan(jual['ID']); // Pastikan 'ID' adalah kolom yang benar
+                                                  deleteBarang(jual['Penjualanid']);
                                                   Navigator.pop(context);
                                                 },
-                                                child: Text('Hapus'),
+                                                child: const Text('Hapus'),
                                               ),
                                             ],
                                           );
@@ -163,15 +158,7 @@ class _PenjualanTabState extends State<PenjualanTab> {
                     );
                   },
                 ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddTransaksi()),
-          );
-        },
-        child: Icon(Icons.add),
-      ),
+     
     );
   }
 }

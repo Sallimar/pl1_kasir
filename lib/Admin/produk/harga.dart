@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/screens/admin_page..dart';
-import 'package:pl1_kasir/home_page.dart';
+import 'package:pl1_kasir/admin/adminhomepage.dart';
+import 'package:pl1_kasir/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProdukDetailPage extends StatefulWidget {
@@ -30,26 +30,27 @@ class _ProdukDetailPageState extends State<ProdukDetailPage> {
   }
 
   // Fungsi untuk menyimpan data ke tabel detailpenjualan
-  Future<void> insertDetailPenjualan(int Produkid, int Penjualanid, int jumlahPesanan, int totalHarga) async {
+  Future<void> insertDetailPenjualan(int ProdukID, int PenjualanID, int JumlahPesanan, int TotalHarga) async {
     final supabase = Supabase.instance.client;
 
     try {
       final response = await supabase.from('detailpenjualan').insert({
-        'Produkid': Produkid,
-        'Penjualanid': Penjualanid,
-        'JumlahProduk': jumlahPesanan,
-        'Subtotal': totalHarga,
+        'ProdukID': ProdukID,
+        'PenjualanID': PenjualanID,
+        'JumlahProduk': JumlahPesanan,
+        'Subtotal': TotalHarga,
+       
       });
 
-      if (response.error == null) {
+      if (response.error != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Pesanan berhasil disimpan!')),
         );
       } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AdminPage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AdminHomePage()));
       }
     } catch (e) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AdminPage()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AdminHomePage()));
     }
   }
 
@@ -57,18 +58,17 @@ class _ProdukDetailPageState extends State<ProdukDetailPage> {
   Widget build(BuildContext context) {
     final produk = widget.produk;
     final harga = produk['Harga'] ?? 0;
-    final Produkid = produk['Produkid'] ?? 0;
-    final Penjualanid = 1; // Contoh ID Penjualan (harus diganti sesuai logika Anda)
-
+    final ProdukID = produk['ProdukID'] ?? 0;
+    final PenjualanID = 1; 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detail Produk'),
-        backgroundColor: Colors.pink.shade300,
+        backgroundColor: Colors.green.shade300,
       ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.pink.shade100, Colors.white],
+            colors: [Colors.green.shade100, Colors.white],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -128,8 +128,8 @@ class _ProdukDetailPageState extends State<ProdukDetailPage> {
                         onPressed: () async {
                           if (jumlahPesanan > 0) {
                             await insertDetailPenjualan(
-                              Produkid,
-                              Penjualanid,
+                              ProdukID,
+                              PenjualanID,
                               jumlahPesanan,
                               totalHarga,
                             );
@@ -140,7 +140,7 @@ class _ProdukDetailPageState extends State<ProdukDetailPage> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.pink.shade300,
+                          backgroundColor: Colors.green.shade300,
                         ),
                         child: Text('Pesan ($totalHarga)', style: const TextStyle(fontSize: 20)),
                       ),

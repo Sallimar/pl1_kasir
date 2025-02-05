@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'user_page.dart';
-import 'admin_page..dart';
+import 'package:pl1_kasir/Petugas/petugashomepage.dart';
+import 'package:pl1_kasir/Admin/adminhomepage.dart';
 
 class RegisterScreen extends StatefulWidget {
   RegisterScreen({super.key});
@@ -14,7 +14,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  String _selectedRole = 'pelanggan'; // Default role
+  String _selectedRole = 'petugas'; // Default role
   final SupabaseClient _supabase = Supabase.instance.client;
 
   Future<void> _registerUser() async {
@@ -37,12 +37,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (_selectedRole == 'admin') {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => AdminPage()),
+            MaterialPageRoute(builder: (context) => AdminHomePage()),
           );
         } else {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => UserPage()),
+            MaterialPageRoute(builder: (context) => PetugasHomePage()),
           );
         }
       } catch (e) {
@@ -59,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Registrasi Pengguna',
+          'Registrasi',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Color.fromARGB(255, 248, 234, 239),
@@ -115,8 +115,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 value: _selectedRole,
                 items: [
                   DropdownMenuItem(
-                    value: 'pelanggan',
-                    child: Text('Pelanggan'),
+                    value: 'petugas',
+                    child: Text('Petugas'),
                   ),
                   DropdownMenuItem(
                     value: 'admin',

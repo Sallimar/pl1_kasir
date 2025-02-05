@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pl1_kasir/Admin/adminhomepage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'user_page.dart';  // Pastikan Anda memiliki halaman UserPage yang benar
+import 'package:pl1_kasir/Petugas/petugashomepage.dart'; 
+import 'package:pl1_kasir/Admin/adminhomepage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,37 +45,45 @@ class _LoginPageState extends State<LoginPage> {
   bool _isPasswordVisible = false;
 
   Future<void> _login() async {
-    final username = _usernameController.text;
-    final password = _passwordController.text;
+  final username = _usernameController.text;
+  final password = _passwordController.text;
 
-    try {
-      final response = await supabase
-          .from('user')
-          .select('username, password')
-          .eq('username', username)
-          .single();
+  try {
+    final response = await supabase
+        .from('user')
+        .select('username, password, role')
+        .eq('username', username)
+        .single();
 
-      if (response != null && response['password'] == password) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login berhasil!')),
-        );
+    if (response != null && response['password'] == password) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login berhasil!')),
+      );
 
-        // Navigasi ke halaman UserPage setelah login berhasil
+      // Cek role pengguna
+      if (response['role'] == 'admin') {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => UserPage()),
+          MaterialPageRoute(builder: (context) => AdminHomePage()),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Username atau Password salah!')),
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => PetugasHomePage()),
         );
       }
-    } catch (e) {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Terjadi kesalahan: $e')),
+        const SnackBar(content: Text('Username atau Password salah!')),
       );
     }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Terjadi kesalahan: $e')),
+    );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

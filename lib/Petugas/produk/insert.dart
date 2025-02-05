@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/home_page.dart';
+import 'package:pl1_kasir/Petugas/petugashomepage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddProduk extends StatefulWidget {
@@ -10,19 +10,27 @@ class AddProduk extends StatefulWidget {
 }
 
 class _AddProdukState extends State<AddProduk> {
-  final TextEditingController namaprodukController = TextEditingController();
-  final TextEditingController hargaController = TextEditingController();
-  final TextEditingController stokController = TextEditingController();
+  final TextEditingController NamaProdukController = TextEditingController();
+  final TextEditingController HargaController = TextEditingController();
+  final TextEditingController StokController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> prdk() async {
-    if (_formKey.currentState!.validate()) {
-      final String namaProduk = namaprodukController.text.trim();
-      final int? harga = int.tryParse(hargaController.text.trim());
-      final int? stok = int.tryParse(stokController.text.trim());
+  @override
+  void dispose() {
+    NamaProdukController.dispose();
+    HargaController.dispose();
+    StokController.dispose();
+    super.dispose();
+  }
 
-      // Validasi input angka
-      if (harga == null || stok == null) {
+  Future<void> tambahProduk() async {
+    if (_formKey.currentState!.validate()) {
+      final String NamaProduk = NamaProdukController.text.trim();
+      final int? Harga = int.tryParse(HargaController.text.trim());
+      final int? Stok = int.tryParse(StokController.text.trim());
+
+      // Validasi angka
+      if (Harga == null || Stok == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Harga dan Stok harus berupa angka')),
         );
@@ -34,11 +42,10 @@ class _AddProdukState extends State<AddProduk> {
         final response = await Supabase.instance.client
             .from('produk')
             .insert({
-              'NamaProduk': namaProduk,
-              'Harga': harga,
-              'Stok': stok,
-            })
-            .select();
+              'NamaProduk': NamaProduk, // HARUS berupa string, bukan controller
+              'Harga': Harga, // HARUS berupa angka
+              'Stok': Stok, // HARUS berupa angka
+            });
 
         if (response.isNotEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -46,7 +53,7 @@ class _AddProdukState extends State<AddProduk> {
           );
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const MyHomePage()),
+            MaterialPageRoute(builder: (context) => const PetugasHomePage()),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -75,7 +82,7 @@ class _AddProdukState extends State<AddProduk> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
-                controller: namaprodukController,
+                controller: NamaProdukController,
                 decoration: const InputDecoration(
                   labelText: 'Nama Produk',
                   border: OutlineInputBorder(),
@@ -89,7 +96,7 @@ class _AddProdukState extends State<AddProduk> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: hargaController,
+                controller: HargaController,
                 decoration: const InputDecoration(
                   labelText: 'Harga',
                   border: OutlineInputBorder(),
@@ -99,12 +106,15 @@ class _AddProdukState extends State<AddProduk> {
                   if (value == null || value.isEmpty) {
                     return 'Harga wajib diisi';
                   }
+                  if (int.tryParse(value) == null) {
+                    return 'Harga harus berupa angka';
+                  }
                   return null;
                 },
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: stokController,
+                controller: StokController,
                 decoration: const InputDecoration(
                   labelText: 'Stok',
                   border: OutlineInputBorder(),
@@ -114,12 +124,15 @@ class _AddProdukState extends State<AddProduk> {
                   if (value == null || value.isEmpty) {
                     return 'Stok wajib diisi';
                   }
+                  if (int.tryParse(value) == null) {
+                    return 'Stok harus berupa angka';
+                  }
                   return null;
                 },
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: prdk,
+                onPressed: tambahProduk,
                 child: const Text('Tambah'),
               ),
             ],

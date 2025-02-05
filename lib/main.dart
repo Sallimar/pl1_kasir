@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:pl1_kasir/screens/login.dart';
-import 'package:pl1_kasir/screens/admin_page..dart';
-import 'package:pl1_kasir/screens/user_page.dart';
-import 'package:pl1_kasir/screens/Register.dart';
+import 'package:pl1_kasir/login.dart';
+import 'package:pl1_kasir/Admin/adminhomepage.dart';
+import 'package:pl1_kasir/Petugas/petugashomepage.dart';
+import 'package:pl1_kasir/Admin/Registrasi.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -40,15 +40,6 @@ class MainPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                 MaterialPageRoute(builder: (context)=> AdminPage()),);
-            }, 
-            icon: Icon(Icons.login, color: Colors.black,))
-        ],
       ),
       body: Container(
         color: Colors.white,
@@ -127,7 +118,7 @@ class MainPage extends StatelessWidget {
                           decoration: TextDecoration.underline,
                         ),
                       ),
-                    )
+                    ),
                   ],
                 )
               ],

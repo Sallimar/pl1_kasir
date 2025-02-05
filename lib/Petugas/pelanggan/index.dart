@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/pelanggan/insertpelanggan.dart';
-import 'package:pl1_kasir/pelanggan/updatepelanggan.dart';
+import 'package:pl1_kasir/Petugas/pelanggan/insert.dart';
+import 'package:pl1_kasir/Petugas/pelanggan/update.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PelangganTab extends StatefulWidget {
@@ -15,10 +15,10 @@ class _PelangganTabState extends State<PelangganTab> {
   @override
   void initState() {
     super.initState();
-    fetchPelanggan();
+    fetchpelanggan();
   }
 
-  Future<void> fetchPelanggan() async {
+  Future<void> fetchpelanggan() async {
     setState(() {
       isLoading = true;
     });
@@ -39,13 +39,13 @@ class _PelangganTabState extends State<PelangganTab> {
     }
   }
 
-  Future<void> deletePelanggan(int id) async {
+  Future<void> deletepelanggan(int id) async {
     try {
       await Supabase.instance.client
           .from('pelanggan')
           .delete()
           .eq('PelangganID', id);
-      fetchPelanggan();
+      fetchpelanggan();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Pelanggan berhasil dihapus')),
       );
@@ -158,7 +158,7 @@ class _PelangganTabState extends State<PelangganTab> {
                                             ),
                                             TextButton(
                                               onPressed: () {
-                                                deletePelanggan(
+                                                deletepelanggan(
                                                     langgan['PelangganID']);
                                                 Navigator.pop(context);
                                               },

@@ -11,9 +11,9 @@ class EditPenjualan extends StatefulWidget {
 }
 
 class _EditPenjualanState extends State<EditPenjualan> {
-  final _tanggalPenjualan = TextEditingController();
-  final _totalHarga = TextEditingController();
-  final _pelangganID = TextEditingController();
+  final _TanggalPenjualan = TextEditingController();
+  final _TotalHarga = TextEditingController();
+  final _PelangganID = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   bool isLoading = false;
@@ -40,9 +40,9 @@ class _EditPenjualanState extends State<EditPenjualan> {
       }
 
       setState(() {
-        _tanggalPenjualan.text = data['TanggalPenjualan'] ?? '';
-        _totalHarga.text = data['TotalHarga'].toString();
-        _pelangganID.text = data['PelangganID'].toString();
+        _TanggalPenjualan.text = data['TanggalPenjualan'] ?? '';
+        _TotalHarga.text = data['TotalHarga'].toString();
+        _PelangganID.text = data['PelangganID'].toString();
         isLoading = false;
       });
     } catch (e) {
@@ -62,9 +62,9 @@ class _EditPenjualanState extends State<EditPenjualan> {
       });
       try {
         await Supabase.instance.client.from('penjualan').update({
-          'TanggalPenjualan': _tanggalPenjualan.text,
-          'TotalHarga': double.parse(_totalHarga.text),
-          'PelangganID': int.parse(_pelangganID.text),
+          'TanggalPenjualan': _TanggalPenjualan.text,
+          'TotalHarga': double.parse(_TotalHarga.text),
+          'PelangganID': int.parse(_PelangganID.text),
         }).eq('PenjualanID', widget.PenjualanID);
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -121,7 +121,7 @@ class _EditPenjualanState extends State<EditPenjualan> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TextFormField(
-                      controller: _tanggalPenjualan,
+                      controller: _TanggalPenjualan,
                       decoration: InputDecoration(
                         labelText: 'Tanggal Penjualan',
                         border: OutlineInputBorder(),
@@ -135,7 +135,7 @@ class _EditPenjualanState extends State<EditPenjualan> {
                     ),
                     SizedBox(height: 16),
                     TextFormField(
-                      controller: _totalHarga,
+                      controller: _TotalHarga,
                       decoration: InputDecoration(
                         labelText: 'Total Harga',
                         border: OutlineInputBorder(),
@@ -153,7 +153,7 @@ class _EditPenjualanState extends State<EditPenjualan> {
                     ),
                     SizedBox(height: 16),
                     TextFormField(
-                      controller: _pelangganID,
+                      controller: _PelangganID,
                       decoration: InputDecoration(
                         labelText: 'Pelanggan ID',
                         border: OutlineInputBorder(),
