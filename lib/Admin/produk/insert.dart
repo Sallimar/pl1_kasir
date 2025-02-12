@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pl1_kasir/Admin/adminhomepage.dart';
+import 'package:pl1_kasir/Admin/produk/index.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddProduk extends StatefulWidget {
@@ -29,7 +30,6 @@ class _AddProdukState extends State<AddProduk> {
       final int? Harga = int.tryParse(HargaController.text.trim());
       final int? Stok = int.tryParse(StokController.text.trim());
 
-      // Validasi angka
       if (Harga == null || Stok == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Harga dan Stok harus berupa angka')),
@@ -39,33 +39,47 @@ class _AddProdukState extends State<AddProduk> {
 
       try {
         // Insert data ke tabel "produk"
-        final response = await Supabase.instance.client
-            .from('produk')
-            .insert({
-              'NamaProduk': NamaProduk, // HARUS berupa string, bukan controller
-              'Harga': Harga, // HARUS berupa angka
-              'Stok': Stok, // HARUS berupa angka
-            });
+        final response = await Supabase.instance.client.from('produk').insert({
+          'NamaProduk': NamaProduk,
+          'Harga': Harga,
+          'Stok': Stok,
+        }).select();
 
+        // Jika insert berhasil, response tidak akan kosong
         if (response.isNotEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Produk berhasil ditambahkan')),
+            const SnackBar(
+              content: Text('Produk berhasil ditambahkan'),
+              backgroundColor: Colors.green,
+            ),
           );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const AdminHomePage()),
-          );
+
+          // Tunggu beberapa saat agar pesan terlihat sebelum pindah halaman
+          await Future.delayed(const Duration(seconds: 2));
+
+          // Pindah ke halaman admin setelah snackbar muncul
+          if (mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => ProdukTab()),
+            );
+          }
         } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const AdminHomePage()),
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Gagal menambahkan produk'),
+              backgroundColor: Colors.red,
+            ),
           );
         }
       } catch (e) {
-       Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const AdminHomePage()),
-          );
+        print('Error: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Terjadi kesalahan, coba lagi'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }

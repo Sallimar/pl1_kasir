@@ -62,7 +62,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           'Registrasi',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Color.fromARGB(255, 248, 234, 239),
+        backgroundColor: Colors.redAccent,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new_sharp),
           onPressed: () {
@@ -73,7 +73,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/demenngemil.png'),
+            image: AssetImage('assets/logongemil.png'),
             fit: BoxFit.cover,
           ),
         ),

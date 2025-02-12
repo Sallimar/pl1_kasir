@@ -19,10 +19,10 @@ class PetugasHomePage extends StatelessWidget {
           
           bottom: TabBar(
             tabs: [
-              Tab(icon: Icon(Icons.category, color: Colors.green.shade800), text: 'Produk'),
-              Tab(icon: Icon(Icons.people, color: Colors.green.shade800), text: 'Customer'),
-              Tab(icon: Icon(Icons.receipt_long, color: Colors.green.shade800), text: 'Penjualan'),
-              Tab(icon: Icon(Icons.assignment, color: Colors.green.shade800), text: 'Detail Penjualan'),
+              Tab(icon: Icon(Icons.category, color: Colors.redAccent), text: 'Produk'),
+              Tab(icon: Icon(Icons.people, color: Colors.redAccent), text: 'Customer'),
+              Tab(icon: Icon(Icons.receipt_long, color: Colors.redAccent), text: 'Penjualan'),
+              Tab(icon: Icon(Icons.assignment, color: Colors.redAccent), text: 'Detail Penjualan'),
             ],
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pl1_kasir/Admin/adminhomepage.dart';
+import 'package:pl1_kasir/Admin/registrasi.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:pl1_kasir/Petugas/petugashomepage.dart'; 
 import 'package:pl1_kasir/Admin/adminhomepage.dart';
@@ -23,12 +24,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: LoginPage(),
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: Colors.black),
-        ),
-      ),
     );
   }
 }
@@ -79,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Terjadi kesalahan: $e')),
+      SnackBar(content: Text('Harap isi Username dan Password')),
     );
   }
 }
@@ -90,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        color: Colors.green,
+        color: Colors.purple[100],
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -101,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    "Login",
+                    "Halo, selamat datang!",
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 40,
@@ -109,12 +104,13 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    "Welcome Back",
+                    "Camilan enak siap menemani harimu!",
                     style: TextStyle(color: Colors.white70, fontSize: 18),
                   ),
                 ],
               ),
             ),
+            //kotak besar
             const SizedBox(height: 70),
             Expanded(
               child: Container(
@@ -159,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                                   decoration: const InputDecoration(
                                     hintText: "Username",
                                     prefixIcon:
-                                        Icon(Icons.person, color: Colors.green),
+                                        Icon(Icons.person, color: Colors.redAccent),
                                     hintStyle: TextStyle(color: Colors.grey),
                                     border: InputBorder.none,
                                   ),
@@ -180,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
                                   decoration: InputDecoration(
                                     hintText: "Password",
                                     icon: const Icon(Icons.lock,
-                                        size: 25, color: Colors.green),
+                                        size: 25, color: Colors.redAccent),
                                     hintStyle:
                                         const TextStyle(color: Colors.grey),
                                     border: InputBorder.none,
@@ -211,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
                             height: 50,
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              color: Colors.green,
+                              color: Colors.redAccent,
                               borderRadius: BorderRadius.circular(50),
                             ),
                             child: const Center(
@@ -222,9 +218,9 @@ class _LoginPageState extends State<LoginPage> {
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
-                              ),
-                            ),
-                          ),
+                              ), 
+                            ), 
+                          ), 
                         ),
                       ],
                     ),

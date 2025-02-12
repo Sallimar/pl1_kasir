@@ -50,7 +50,7 @@ class _EditProdukState extends State<EditProduk> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Produk berhasil diperbarui')),
         );
-        Navigator.pop(context);
+        Navigator.pop(context, true);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Terjadi kesalahan: $e')),

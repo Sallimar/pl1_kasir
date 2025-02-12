@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/Admin/adminhomepage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -12,8 +11,8 @@ class DetailPenjualanTab extends StatefulWidget {
 
 class _DetailPenjualanTabState extends State<DetailPenjualanTab> {
   List<Map<String, dynamic>> detaill = [];
+  List<int> selectedItems = []; // List untuk item yang dipilih
   bool isLoading = false;
-  bool isOrdering = false;
 
   @override
   void initState() {
@@ -21,57 +20,25 @@ class _DetailPenjualanTabState extends State<DetailPenjualanTab> {
     fetchDetail();
   }
 
+  /// Fungsi untuk mengambil detail penjualan dari Supabase
   Future<void> fetchDetail() async {
     setState(() {
       isLoading = true;
     });
+
     try {
-      final response = await Supabase.instance.client.from('detailpenjualan').select();
+      final response = await Supabase.instance.client
+          .from('detailpenjualan')
+          .select('*, penjualan(*, pelanggan(*)), produk(*)');
+
       setState(() {
         detaill = List<Map<String, dynamic>>.from(response);
-      });
-    } catch (e) {
-      print('Error: $e');
-    } finally {
-      setState(() {
         isLoading = false;
       });
-    }
-  }
-
-  Future<void> transaksi(int pelangganID, int subtotal) async {
-    setState(() {
-      isOrdering = true;
-    });
-
-    try {
-      final response = await Supabase.instance.client.from('penjualan').insert({
-        'PelangganID': pelangganID,
-        'TotalHarga': subtotal,
-      }).select();
-
-      if (response.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Pesanan berhasil disimpan!')),
-        );
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => AdminHomePage()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal menyimpan pesanan')),
-        );
-      }
     } catch (e) {
-      print('Error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Terjadi kesalahan saat memesan')),
-      );
-    } finally {
+      print('Error fetching detail penjualan: $e');
       setState(() {
-        isOrdering = false;
+        isLoading = false;
       });
     }
   }
@@ -79,6 +46,16 @@ class _DetailPenjualanTabState extends State<DetailPenjualanTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Detail Penjualan'),
+        backgroundColor: Colors.green,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: isLoading
           ? Center(
               child: LoadingAnimationWidget.twoRotatingArc(
@@ -87,7 +64,7 @@ class _DetailPenjualanTabState extends State<DetailPenjualanTab> {
               ),
             )
           : detaill.isEmpty
-              ? Center(
+              ? const Center(
                   child: Text(
                     'Detail penjualan tidak ada',
                     style: TextStyle(fontSize: 18),
@@ -97,66 +74,70 @@ class _DetailPenjualanTabState extends State<DetailPenjualanTab> {
                   itemCount: detaill.length,
                   itemBuilder: (context, index) {
                     final detail = detaill[index];
-                    final int pelangganID = detail['PelangganID'] ?? 1;
-                    final int subtotal = detail['Subtotal'] != null
-                        ? (detail['Subtotal'] is int
-                            ? detail['Subtotal']
-                            : int.tryParse(detail['Subtotal'].toString()) ?? 0)
-                        : 0;
+                    final detailID = detail['DetailID'] as int? ?? -1;
+                    final pelangganNama = detail['penjualan']?['pelanggan']
+                            ?['NamaPelanggan']
+                        ?.toString();
+                    final produkNama =
+                        detail['produk']?['NamaProduk']?.toString();
+                    final jumlahProduk =
+                        detail['JumlahProduk']?.toString() ?? 'Tidak tersedia';
+                    final subtotal =
+                        detail['Subtotal']?.toString() ?? 'Tidak tersedia';
 
                     return Card(
                       elevation: 4,
-                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       color: Colors.lightGreen[50],
                       child: Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
                           children: [
-                            Text(
-                              'DetailID: ${detail['DetailID']?.toString() ?? 'Tidak tersedia'}',
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            Checkbox(
+                              value: selectedItems.contains(detailID),
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  if (value == true) {
+                                    selectedItems.add(detailID);
+                                  } else {
+                                    selectedItems.remove(detailID);
+                                  }
+                                });
+                              },
                             ),
-                            SizedBox(height: 8),
-                            Text(
-                              'PenjualanID: ${detail['PenjualanID']?.toString() ?? 'Tidak tersedia'}',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            Text(
-                              'ProdukID: ${detail['ProdukID']?.toString() ?? 'Tidak tersedia'}',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            Text(
-                              'JumlahProduk: ${detail['JumlahProduk']?.toString() ?? 'Tidak tersedia'}',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            Text(
-                              'Subtotal: ${detail['Subtotal']?.toString() ?? 'Tidak tersedia'}',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: isOrdering
-                                  ? null
-                                  : () async {
-                                      await transaksi(pelangganID, subtotal);
-                                    },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
-                                padding: EdgeInsets.symmetric(vertical: 12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'DetailID: ${detailID != -1 ? detailID.toString() : 'Tidak tersedia'}',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Pelanggan: ${pelangganNama ?? 'Tidak tersedia'}',
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  Text(
+                                    'Produk: ${produkNama ?? 'Tidak tersedia'}',
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  Text(
+                                    'Jumlah: $jumlahProduk',
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  Text(
+                                    'Subtotal: $subtotal',
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ],
                               ),
-                              child: isOrdering
-                                  ? CircularProgressIndicator(color: Colors.white)
-                                  : Text(
-                                      'Pesan',
-                                      style: TextStyle(fontSize: 16, color: Colors.white),
-                                    ),
                             ),
                           ],
                         ),

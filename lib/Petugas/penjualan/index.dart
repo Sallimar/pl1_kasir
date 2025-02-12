@@ -134,14 +134,14 @@ class _PenjualanTabState extends State<PenjualanTab> {
                                             actions: [
                                               TextButton(
                                                 onPressed: () => Navigator.pop(context),
-                                                child: const Text('Batal'),
+                                                child: const Text('Batal', style: TextStyle(color: Colors.blueAccent),),
                                               ),
                                               TextButton(
                                                 onPressed: () {
                                                   deleteBarang(jual['Penjualanid']);
                                                   Navigator.pop(context);
                                                 },
-                                                child: const Text('Hapus'),
+                                                child: const Text('Hapus', style: TextStyle(color: Colors.red),),
                                               ),
                                             ],
                                           );

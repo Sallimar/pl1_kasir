@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/Admin/detailpenjualan/detail_penjualan.dart'; // Fixed the space typo
-import 'package:pl1_kasir/Admin/produk/harga.dart';
+import 'package:pl1_kasir/Admin/adminhomepage.dart';
 import 'package:pl1_kasir/Admin/produk/insert.dart';
 import 'package:pl1_kasir/Admin/produk/update.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:pl1_kasir/Admin/produk/harga.dart';
 
 class ProdukTab extends StatefulWidget {
   @override
@@ -19,6 +20,15 @@ class _ProdukTabState extends State<ProdukTab> {
   void initState() {
     super.initState();
     fetchProduk();
+
+    Supabase.instance.client
+    .from('produk')
+    .stream(primaryKey: ['ProdukID']) 
+    .eq('ProdukID', 'produk') 
+    .listen((List<Map<String, dynamic>> data) {
+      fetchProduk(); 
+    });
+
   }
 
   Future<void> fetchProduk() async {
@@ -42,7 +52,7 @@ class _ProdukTabState extends State<ProdukTab> {
   Future<void> deleteProduk(int produkID) async {
     try {
       await Supabase.instance.client.from('produk').delete().eq('ProdukID', produkID);
-      fetchProduk();
+      fetchProduk(); // Perbarui data setelah penghapusan
     } catch (e) {
       print('Error deleting produk: $e');
     }
@@ -51,6 +61,18 @@ class _ProdukTabState extends State<ProdukTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Produk', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.push(
+              context, 
+              MaterialPageRoute(builder: (cotext)=>AdminHomePage()),);
+          }, 
+          icon: Icon(Icons.arrow_back, color: Colors.black,))
+      ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : produk.isEmpty
@@ -64,7 +86,7 @@ class _ProdukTabState extends State<ProdukTab> {
                   padding: EdgeInsets.all(8),
                   itemCount: produk.length,
                   itemBuilder: (context, index) {
-                    final produkItem = produk[index]; // Renamed to produkItem
+                    final produkItem = produk[index];
                     return InkWell(
                       onTap: () {
                         Navigator.push(
@@ -114,7 +136,11 @@ class _ProdukTabState extends State<ProdukTab> {
                                           MaterialPageRoute(
                                             builder: (context) => EditProduk(ProdukID: produkID),
                                           ),
-                                        );
+                                        ).then((result) {
+                                          if (result == true) {
+                                            fetchProduk(); // Perbarui daftar produk setelah edit
+                                          }
+                                        });
                                       } else {
                                         print('ID produk tidak valid');
                                       }
@@ -137,7 +163,7 @@ class _ProdukTabState extends State<ProdukTab> {
                                               TextButton(
                                                 onPressed: () {
                                                   deleteProduk(produkItem['ProdukID']);
-                                                  Navigator.pop(context);
+                                                  Navigator.pop(context); // Tutup dialog setelah hapus
                                                 },
                                                 child: const Text('Hapus'),
                                               ),
@@ -161,7 +187,11 @@ class _ProdukTabState extends State<ProdukTab> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AddProduk()),
-          );
+          ).then((result) {
+            if (result == true) {
+              fetchProduk(); // Perbarui daftar setelah menambah produk
+            }
+          });
         },
         child: Icon(Icons.add),
       ),

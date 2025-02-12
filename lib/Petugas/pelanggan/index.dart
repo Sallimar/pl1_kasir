@@ -154,7 +154,7 @@ class _PelangganTabState extends State<PelangganTab> {
                                             TextButton(
                                               onPressed: () =>
                                                   Navigator.pop(context),
-                                              child: Text('Batal'),
+                                              child: Text('Batal', style: TextStyle(color: Colors.blueAccent),),
                                             ),
                                             TextButton(
                                               onPressed: () {
@@ -162,7 +162,7 @@ class _PelangganTabState extends State<PelangganTab> {
                                                     langgan['PelangganID']);
                                                 Navigator.pop(context);
                                               },
-                                              child: Text('Hapus'),
+                                              child: Text('Hapus', style: TextStyle(color: Colors.red),),
                                             ),
                                           ],
                                         );

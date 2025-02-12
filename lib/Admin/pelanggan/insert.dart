@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/Admin/adminhomepage.dart';
+import 'package:pl1_kasir/Admin/pelanggan/index.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddPelanggan extends StatefulWidget {
-  AddPelanggan({super.key});
-
   @override
   State<AddPelanggan> createState() => _AddPelangganState();
 }
@@ -22,30 +20,18 @@ class _AddPelangganState extends State<AddPelanggan> {
       final String NomorTelepon = _notlp.text;
 
       try {
-        final response =
-            await Supabase.instance.client.from('pelanggan').insert(
-          {
-            'NamaPelanggan': NamaPelanggan,
-            'Alamat': Alamat,
-            'NomorTelepon': NomorTelepon,
-          }
+        await Supabase.instance.client.from('pelanggan').insert({
+          'NamaPelanggan': NamaPelanggan,
+          'Alamat': Alamat,
+          'NomorTelepon': NomorTelepon,
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Pelanggan berhasil ditambahkan')),
         );
 
-        if (response != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(
-                    'Gagal menambahkan pelanggan: ${response.error!.message}')),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Pelanggan berhasil ditambahkan')),
-          );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => AdminHomePage()),
-          );
-        }
+        // Kembali ke halaman sebelumnya (PelangganTab) dan kirim sinyal bahwa data telah diperbarui
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> PelangganTab()),);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Terjadi kesalahan: $e')),
@@ -101,9 +87,16 @@ class _AddPelangganState extends State<AddPelanggan> {
                   labelText: 'Nomor Telepon',
                   border: OutlineInputBorder(),
                 ),
+                keyboardType: TextInputType.phone,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Nomor telepon wajib diisi';
+                  }
+                  if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                    return 'Nomor telepon hanya boleh angka';
+                  }
+                  if (value.length < 10) {
+                    return 'Nomor telepon minimal 10 digit';
                   }
                   return null;
                 },

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pl1_kasir/Petugas/petugashomepage.dart';
 import 'package:pl1_kasir/admin/detailpenjualan/detail_penjualan.dart';
 import 'package:pl1_kasir/admin/pelanggan/index.dart';
 import 'package:pl1_kasir/admin/penjualan/index.dart';
@@ -20,7 +19,7 @@ class _AdminHomePageState extends State<AdminHomePage> with SingleTickerProvider
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this); // Pastikan length sesuai dengan jumlah children
   }
 
   @override
@@ -39,53 +38,66 @@ class _AdminHomePageState extends State<AdminHomePage> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Admin"),
-      backgroundColor: Colors.green,),
+      appBar: AppBar(
+        title: Text("Admin"),
+        backgroundColor: Colors.purple[100],
+      ),
       drawer: Drawer(
         child: ListView(
           children: [
-            UserAccountsDrawerHeader(
-              accountName: Text("Nessa"),
-              accountEmail: Text("sallimarxpplg1@gmail.com"),
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: 
-                AssetImage('assets/logo2.png'), 
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.purple[100]),
+              child: Center(
+                child: Text(
+                  "Menu Admin",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
-              decoration: BoxDecoration(color: Colors.lightGreen), // Warna latar belakang
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text('Halaman Utama'),
+              onTap: () => _changeTab(0),
             ),
             ListTile(
               leading: Icon(Icons.category),
               title: Text('Produk'),
-              onTap: () => _changeTab(0),
+              onTap: () => _changeTab(1),
             ),
             ListTile(
               leading: Icon(Icons.people),
               title: Text('Customer'),
-              onTap: () => _changeTab(1),
+              onTap: () => _changeTab(2),
             ),
             ListTile(
               leading: Icon(Icons.receipt_long),
               title: Text('Penjualan'),
-              onTap: () => _changeTab(2),
+              onTap: () => _changeTab(3),
             ),
             ListTile(
               leading: Icon(Icons.assignment),
               title: Text('Detail Penjualan'),
-              onTap: () => _changeTab(3),
+              onTap: () => _changeTab(4),
             ),
             Divider(),
             ListTile(
               leading: Icon(Icons.dashboard),
               title: Text('Register'),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RegisterScreen()),
+                );
               },
             ),
             ListTile(
               leading: Icon(Icons.logout),
               title: Text('Log Out'),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyApp()),
+                );
               },
             ),
           ],
@@ -94,6 +106,19 @@ class _AdminHomePageState extends State<AdminHomePage> with SingleTickerProvider
       body: TabBarView(
         controller: _tabController,
         children: [
+          // Halaman Selamat Datang
+          Container(
+            color: Colors.purple[100],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Selamat Datang di Demen Ngemil",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+              ],
+            ),
+          ),
           ProdukTab(),
           PelangganTab(),
           PenjualanTab(),

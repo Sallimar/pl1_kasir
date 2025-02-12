@@ -41,8 +41,14 @@ class _ProdukTabState extends State<ProdukTab> {
 
   Future<void> deleteProduk(int produkID) async {
     try {
-      await Supabase.instance.client.from('produk').delete().eq('ProdukID', produkID);
+      await Supabase.instance.client
+      .from('produk')
+      .delete()
+      .eq('ProdukID', produkID);
       fetchProduk();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Pelanggan berhasil dihapus'))
+      );
     } catch (e) {
       print('Error deleting produk: $e');
     }
@@ -132,14 +138,14 @@ class _ProdukTabState extends State<ProdukTab> {
                                             actions: [
                                               TextButton(
                                                 onPressed: () => Navigator.pop(context),
-                                                child: const Text('Batal'),
+                                                child: const Text('Batal', style: TextStyle(color: Colors.blueAccent),),
                                               ),
                                               TextButton(
                                                 onPressed: () {
                                                   deleteProduk(produkItem['ProdukID']);
                                                   Navigator.pop(context);
                                                 },
-                                                child: const Text('Hapus'),
+                                                child: const Text('Hapus', style: TextStyle(color: Colors.red),),
                                               ),
                                             ],
                                           );
